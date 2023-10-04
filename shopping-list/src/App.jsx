@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const groceryItems = [
   {
     id: 1,
@@ -9,7 +11,7 @@ const groceryItems = [
     id: 2,
     name: 'Sugar',
     quantity: 5,
-    checked: false,
+    checked: true,
   },
   {
     id: 3,
@@ -31,24 +33,37 @@ export default function App() {
 }
 
 function Header(){
-  return <h1>Catatan Belanjaku 📝</h1>
+  return <h1>My Shopping List 📝</h1>
 }
 
 function Form(){
+
+  const [name, setName] = useState('');
+  const [quantity, setQuantity] = useState(1);
+
+  function handleSubmit(e)
+  {
+    e.preventDefault();
+    
+
+    const newItem = { name, quantity, checked:false, id: Date.now() };
+    console.log(newItem);
+  }
+
+  const quantityNo = [...Array(40)].map((_, i) => (
+    <option value ={i+1} key={i + 1}>{i + 1}
+    </option>
+
+  ));
+
   return (
-    <form className="add-form">
+    <form className="add-form" onSubmit={handleSubmit}>
         <h3>What are we buying today?</h3>
         <div>
-          <select>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
-          <input type="text" placeholder="nama barang..." />
+          <select value={quantity} onChange={(e)=>setQuantity(e.target.value)}>{quantityNo}</select>
+          <input type="text" placeholder="Item names" value={name} onChange={(e) => setName(e.target.value)}/>
         </div>
-        <button>Tambah</button>
+        <button>Add</button>
       </form>
   );
 }
@@ -60,11 +75,7 @@ function GroceryList(){
     <div className="list">
         <ul>
           {groceryItems.map((item) => (
-          <li key={item.id}>
-             <input type="checkbox" checked="true" />
-             <span style="text-decoration: line-through;">1 Kopi</span>
-             <button>&times;</button>
-           </li>
+            <Item item={item} key ={item.id} />
           ))}
         </ul>
       </div>
@@ -77,6 +88,18 @@ function GroceryList(){
         <button>Bersihkan Daftar</button>
       </div>
       </>
+  );
+}
+
+function Item({item}){
+  return(
+    <li key={item.id}>
+             <input type="checkbox" />
+             <span style={ item.checked ? { textDecoration:'line-through' }: {}}>
+              {item.quantity} {item.name}
+              </span>
+             <button>&times;</button>
+           </li>
   );
 }
 
